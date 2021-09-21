@@ -7,7 +7,28 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div id="content-page"></div>
+        <div class="main">
+            <div class="header">
+                <h1>Учет моих расходов</h1>
+            </div>
+            <div class="block">
+                <div>
+                    <p>Куда было потрачено:</p>
+                    <input type="text">
+                </div>
+                <div>
+                    <p>Сколько было потрачено:</p>
+                    <input type="text">
+                </div>
+                <div class="btn">
+                    <button>Добавить</button>
+                </div>
+            </div>
+            <div class="total">
+                <span>Итого:</span>
+            </div>
+            <div class="generation"></div>
+        </div>
         <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-umd-min.js"></script>
         <script src="https://yastatic.net/lodash/4.17.11/lodash.min.js"></script>
         <script src="script.js"></script>
