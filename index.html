@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <br>
-        <title>JS</title>
+        <title>To-Do List</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"/>
         <link rel="stylesheet" href="style.css">
     </head>
@@ -12,22 +11,22 @@
                 <h1>Учет моих расходов</h1>
             </div>
             <div class="block">
-                <div>
+                <div class="box1">
                     <p>Куда было потрачено:</p>
-                    <input type="text">
+                    <input type="text" placeholder="Куда было потрачено" id="inp_one">
                 </div>
-                <div>
+                <div class="box2">
                     <p>Сколько было потрачено:</p>
-                    <input type="text">
+                    <input type="number" placeholder="Сколько было потрачено" id="inp_two">
                 </div>
-                <div class="btn">
-                    <button>Добавить</button>
+                <div class="box3">
+                    <button onclick="onClickButton()">Добавить</button>
                 </div>
             </div>
             <div class="total">
                 <span>Итого:</span>
             </div>
-            <div class="generation"></div>
+                <div id="content-page"></div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-umd-min.js"></script>
         <script src="https://yastatic.net/lodash/4.17.11/lodash.min.js"></script>
