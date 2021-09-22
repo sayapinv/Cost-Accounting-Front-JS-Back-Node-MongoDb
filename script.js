@@ -12,6 +12,16 @@ onClickButton=()=>{
 
     if(inputOne.value!=='' && inputTwo.value!==''){
 
+        if(document.getElementById('warn')){
+
+            let child = document.getElementById('warn');
+    
+            while (child.firstChild) {                                
+                child.removeChild(child.firstChild);
+            }
+
+        }
+
         allTasks.push({
             name: inputOne.value,            
             price: inputTwo.value                            
@@ -29,7 +39,15 @@ onClickButton=()=>{
 
         render();
     }else{
-        console.error('одно из полей пустое');
+
+        if(!document.getElementById('error')){
+            const content = document.getElementById('warn');
+            let textName = document.createElement('p')
+            textName.id = 'error'
+            content.appendChild(textName)
+            textName.innerText = 'Заполните все поля!'
+        }
+
     }
 
 }
@@ -104,15 +122,39 @@ const deleteElement = (index) =>{                                               
 
 }
 
-const editElement = (textName,container,itemName,itemPrice,imageEdit,index) =>{
+const editElement = (textName,textPrice,container,itemName,itemPrice,imageEdit,index) =>{
+    // textName // <p>1) hello 22.09.2021</p>
+    // textPrice // <p>1 p.</p>
+    // container // <div id="task-0" class="task-container"><p>1) hello 22.09.2021</p><p>1 p.</p><img src="edit.svg"><img src="delete.svg"></div>
+    // itemName //  hello
+    // itemPrice // 1
+    // imageEdit // <img src="edit.svg">
+    // index // 0
 
-    const newTag =  document.createElement('input');
-    newTag.value = itemName;//добавляем к новому input атрибут value со значением нашего текста который был в p
-    container.replaceChild(newTag, text );//заменяем наши теги
+    const newName =  document.createElement('input');
+    const newPrice =  document.createElement('input');
+
+    newPrice.type = "number";
+
+    newName.value = itemName;
+    newPrice.value = itemPrice;
+
+    container.replaceChild(newName, textName );//заменяем наши теги
+    container.replaceChild(newPrice, textPrice );
+
     const editImg =  document.createElement('img');//новая картинка
     editImg.src = 'ok.svg';//атрибут
     container.replaceChild(editImg, imageEdit );//заменяем наши картинки на время редактирования
-    editImg.onclick = () => editElementSave(index,newTag);//передаем параметры индекс элемента который мы хотим сохранить и нашновосозданный инпут
+
+    editImg.onclick = () => editElementSave(index,newName,newPrice);//передаем параметры индекс элемента который мы хотим сохранить и нашновосозданный инпут
+
+}
+
+const editElementSave = (index,newName,newPrice) =>{                                                                                 //функция сохранения измененного результата
+
+    allTasks[index].name = newName.value;
+    allTasks[index].price = newPrice.value;
+    render();
 
 }
 

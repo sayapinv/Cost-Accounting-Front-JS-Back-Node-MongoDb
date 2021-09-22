@@ -11,11 +11,11 @@
                 <h1>Учет моих расходов</h1>
             </div>
             <div class="block">
-                <div class="box1">
+                <div class="box1" id="boxone">
                     <p>Куда было потрачено:</p>
                     <input type="text" placeholder="Куда было потрачено" id="inp_one">
                 </div>
-                <div class="box2">
+                <div class="box2" id="boxtwo">
                     <p>Сколько было потрачено:</p>
                     <input type="number" placeholder="Сколько было потрачено" id="inp_two">
                 </div>
@@ -23,6 +23,7 @@
                     <button onclick="onClickButton()">Добавить</button>
                 </div>
             </div>
+            <div id="warn"></div>
             <div class="total">
                 <span id="totalid"></span>
             </div>
