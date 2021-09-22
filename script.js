@@ -3,29 +3,56 @@ let allTasks = [];
 let inputOne = null; 
 let inputTwo = null; 
 
-
+let summ = 0;
 
 inputOne = document.getElementById('inp_one');
 inputTwo = document.getElementById('inp_two');    
 
-
-
 onClickButton=()=>{
+
     if(inputOne.value!=='' && inputTwo.value!==''){
+
         allTasks.push({
             name: inputOne.value,            
             price: inputTwo.value                            
         });
+
         inputOne.value = '';                           
         inputTwo.value = '';
-        console.log(allTasks)
+
+        summ = 0;
+
+        allTasks.forEach(index=>{
+            summ +=Number(index.price)
+        })
+        
+
         render();
+    }else{
+        console.error('одно из полей пустое');
     }
 
 }
 
+function formatDate(date) {
 
-render = () =>{
+    let dd = date.getDate();
+    if (dd < 10) dd = '0' + dd;
+  
+    let mm = date.getMonth() + 1;
+    if (mm < 10) mm = '0' + mm;
+  
+    let yy = date.getFullYear();
+  
+    return dd + '.' + mm + '.' + yy;
+}
+  
+let d = new Date(); 
+
+let actualDate = formatDate(d);//здесь лежит готовая дата
+
+
+const render = () =>{
 
     const content = document.getElementById('content-page');
     
@@ -37,6 +64,57 @@ render = () =>{
         let container = document.createElement('div');
         container.id = `task-${index}`;
         container.className = 'task-container';
+        let textName = document.createElement('p')
+        content.appendChild(container)
+        let number = index+1+") ";
+        textName.innerText = number+item.name+' '+actualDate;
+        container.appendChild(textName);
+        let textPrice = document.createElement('p')
+        content.appendChild(container)
+        textPrice.innerText = item.price+' p.';
+        container.appendChild(textPrice);
+        const imageEdit = document.createElement('img');
+        imageEdit.src = 'edit.svg';
+        const imageDelete = document.createElement('img');
+        imageDelete.src = 'delete.svg';
+        container.appendChild(imageEdit);
+        container.appendChild(imageDelete);
+        const contentTotal = document.getElementById('totalid')
+        contentTotal.innerText = 'Итого: '+summ+' р.'
+        imageDelete.onclick = () => deleteElement(index)
+        imageEdit.onclick = () => editElement(textName,textPrice,container,item.name,item.price,imageEdit,index)
     })
+    
 }
-render();
+
+const deleteElement = (index) =>{                                                                                        //функция удаления элемента из массива по индексу элемента
+
+    allTasks.splice(index,1);//удалем 1 элемент с выбранным индексом
+
+    summ = 0;
+    allTasks.forEach(index=>{
+        summ +=Number(index.price)
+    })
+
+    const contentTotal = document.getElementById('totalid')
+    contentTotal.innerText = '';
+
+    
+    render();
+
+}
+
+const editElement = (textName,container,itemName,itemPrice,imageEdit,index) =>{
+
+    const newTag =  document.createElement('input');
+    newTag.value = itemName;//добавляем к новому input атрибут value со значением нашего текста который был в p
+    container.replaceChild(newTag, text );//заменяем наши теги
+    const editImg =  document.createElement('img');//новая картинка
+    editImg.src = 'ok.svg';//атрибут
+    container.replaceChild(editImg, imageEdit );//заменяем наши картинки на время редактирования
+    editImg.onclick = () => editElementSave(index,newTag);//передаем параметры индекс элемента который мы хотим сохранить и нашновосозданный инпут
+
+}
+
+
+
