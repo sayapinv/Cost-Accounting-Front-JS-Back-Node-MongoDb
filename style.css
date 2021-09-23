@@ -70,8 +70,9 @@ button {
     border-radius: 5px;
 }
 
-h1{
+h1 {
     font-weight: initial;
+    font-style: italic;
 }
 
 #content-page {
@@ -92,8 +93,9 @@ img{
     width: 35px;
 }
 
-.task-container p{
+.task-container p {
     font-size: 20px;
+    margin: 0;
 }
 span{
     font-size: 20px;

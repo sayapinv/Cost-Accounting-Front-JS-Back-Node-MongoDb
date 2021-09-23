@@ -52,6 +52,8 @@ onClickButton=()=>{
 
 }
 
+
+
 function formatDate(date) {
 
     let dd = date.getDate();
@@ -150,12 +152,46 @@ const editElement = (textName,textPrice,container,itemName,itemPrice,imageEdit,i
 
 }
 
-const editElementSave = (index,newName,newPrice) =>{                                                                                 //функция сохранения измененного результата
+const editElementSave = (index,newName,newPrice) =>{
+    
 
-    allTasks[index].name = newName.value;
-    allTasks[index].price = newPrice.value;
-    render();
+    if(newName.value!=='' && newPrice.value!==''){
 
+        if(document.getElementById('warn')){
+
+            let child = document.getElementById('warn');
+    
+            while (child.firstChild) {                                
+                child.removeChild(child.firstChild);
+            }
+
+        }
+
+        
+
+        allTasks[index].name = newName.value;
+        allTasks[index].price = newPrice.value;
+
+        summ = 0;
+        allTasks.forEach(index=>{
+        summ +=Number(index.price)
+        })
+
+        render();
+
+    }else{
+
+        if(!document.getElementById('error')){
+            const content = document.getElementById('warn');
+            let textName = document.createElement('p')
+            textName.id = 'error'
+            content.appendChild(textName)
+            textName.innerText = 'Заполните все поля!'
+        }
+
+    }
+    
+    
 }
 
 
