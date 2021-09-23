@@ -22,7 +22,6 @@ window.onload = async function init(){
     render();    
 }
   
-
 const onClickButton = async () =>{
 
     if(inputOne.value!=='' && inputTwo.value!==''){
@@ -52,7 +51,6 @@ const onClickButton = async () =>{
         const result = await resp.json();
 
         allTasks = result.data;
-        console.log('result', result)
 
         inputOne.value = '';                           
         inputTwo.value = '';
