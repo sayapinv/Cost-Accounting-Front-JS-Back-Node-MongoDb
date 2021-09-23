@@ -99,7 +99,6 @@ const render = () =>{
     while (content.firstChild) {                                
         content.removeChild(content.firstChild);
     }
-    console.log('allTask', allTasks)
     allTasks.map((item, index) => {
         const container = document.createElement('div');
         container.id = `task-${index}`;
@@ -128,7 +127,7 @@ const render = () =>{
 }
 
 const deleteElement = async (id,index) =>{                                                                                        //функция удаления элемента из массива по индексу элемента
-    console.log(id)
+
     const resp = await fetch(`http://localhost:8000/deleteTask?id=${id}`,{
         method: 'DELETE'
     });
@@ -150,22 +149,15 @@ const deleteElement = async (id,index) =>{                                      
 
 }
 
-const editElement = (textName, textPrice, container, itemName, item, index) =>{
-    // textName // <p>1) hello 22.09.2021</p>
-    // textPrice // <p>1 p.</p>
-    // container // <div id="task-0" class="task-container"><p>1) hello 22.09.2021</p><p>1 p.</p><img src="edit.svg"><img src="delete.svg"></div>
-    // itemName //  hello
-    // itemPrice // 1
-    // imageEdit // <img src="edit.svg">
-    // index // 0
+const editElement = (textName, textPrice, container, item, imageEdit, index) =>{
 
     const newName =  document.createElement('input');
     const newPrice =  document.createElement('input');
 
     newPrice.type = "number";
 
-    newName.value = itemName;
-    newPrice.value = itemPrice;
+    newName.value = item.text;
+    newPrice.value = item.price;
 
     container.replaceChild(newName, textName );//заменяем наши теги
     container.replaceChild(newPrice, textPrice );
@@ -178,8 +170,7 @@ const editElement = (textName, textPrice, container, itemName, item, index) =>{
 
 }
 
-const editElementSave = async (index,newName,newPrice) =>{
-    
+const editElementSave = async (index,newName,newPrice,item) =>{
 
     if(newName.value!=='' && newPrice.value!==''){
 
@@ -200,21 +191,14 @@ const editElementSave = async (index,newName,newPrice) =>{
             'Access-Control-allow-Origin':'*'
         },
         body: JSON.stringify({
-            id: item.id,
-            text1: newName,
-            text2: newPrice
+            _id: item._id,
+            text: newName.value,
+            price: newPrice.value,
         })
         });
+
         let result = await resp.json();
         allTasks = result.data;
-
-        allTasks[index].name = newName.value;
-        allTasks[index].price = newPrice.value;
-
-        summ = 0;
-        allTasks.forEach(index=>{
-        summ +=Number(index.text2)
-        })
 
         render();
 
