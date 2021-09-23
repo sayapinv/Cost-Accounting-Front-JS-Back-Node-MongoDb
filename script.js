@@ -5,10 +5,25 @@ let inputTwo = null;
 
 let summ = 0;
 
-inputOne = document.getElementById('inp_one');
-inputTwo = document.getElementById('inp_two');    
+window.onload = async function init(){
+    inputOne = document.getElementById('inp_one');
+    inputTwo = document.getElementById('inp_two');
+    const resp = await fetch('http://localhost:8000/allTasks',{
+        method: 'GET'
+    });
+    let result = await resp.json();
 
-onClickButton=()=>{
+    allTasks = result.data;
+
+    summ = allTasks
+        .map(item => (Number(item.price)))
+        .reduce((sum, item) => (sum += item), 0);
+    
+    render();    
+}
+  
+
+const onClickButton = async () =>{
 
     if(inputOne.value!=='' && inputTwo.value!==''){
 
@@ -22,25 +37,34 @@ onClickButton=()=>{
 
         }
 
-        allTasks.push({
-            name: inputOne.value,            
-            price: inputTwo.value                            
+        const resp = await fetch('http://localhost:8000/createTask',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            'Access-Control-allow-Origin':'*'
+        },
+        body: JSON.stringify({
+            text: inputOne.value,
+            price: inputTwo.value
+        })
         });
+
+        const result = await resp.json();
+
+        allTasks = result.data;
+        console.log('result', result)
 
         inputOne.value = '';                           
         inputTwo.value = '';
 
-        summ = 0;
-
-        allTasks.forEach(index=>{
-            summ +=Number(index.price)
-        })
+        summ = allTasks
+            .map(item => (Number(item.price)))
+            .reduce((sum, item) => (sum += item), 0);
         
-
         render();
-    }else{
+    } else {
 
-        if(!document.getElementById('error')){
+        if (!document.getElementById('error')) {
             const content = document.getElementById('warn');
             let textName = document.createElement('p')
             textName.id = 'error'
@@ -54,23 +78,19 @@ onClickButton=()=>{
 
 
 
-function formatDate(date) {
+const formatDate = (date) => {
+    const newDate = new Date(date);
 
-    let dd = date.getDate();
+    let dd = newDate.getDate();
     if (dd < 10) dd = '0' + dd;
   
-    let mm = date.getMonth() + 1;
+    let mm = newDate.getMonth() + 1;
     if (mm < 10) mm = '0' + mm;
   
-    let yy = date.getFullYear();
+    let yy = newDate.getFullYear();
   
     return dd + '.' + mm + '.' + yy;
 }
-  
-let d = new Date(); 
-
-let actualDate = formatDate(d);//здесь лежит готовая дата
-
 
 const render = () =>{
 
@@ -79,19 +99,19 @@ const render = () =>{
     while (content.firstChild) {                                
         content.removeChild(content.firstChild);
     }
-    
-    allTasks.map((item,index)=>{
-        let container = document.createElement('div');
+    console.log('allTask', allTasks)
+    allTasks.map((item, index) => {
+        const container = document.createElement('div');
         container.id = `task-${index}`;
         container.className = 'task-container';
-        let textName = document.createElement('p')
-        content.appendChild(container)
-        let number = index+1+") ";
-        textName.innerText = number+item.name+' '+actualDate;
+        const textName = document.createElement('p');
+        content.appendChild(container);
+        const newDate = formatDate(item.date);
+        textName.innerText = `${index + 1}) ${item.text} ${newDate}`;
         container.appendChild(textName);
         let textPrice = document.createElement('p')
         content.appendChild(container)
-        textPrice.innerText = item.price+' p.';
+        textPrice.innerText = `${item.price} p.`;
         container.appendChild(textPrice);
         const imageEdit = document.createElement('img');
         imageEdit.src = 'edit.svg';
@@ -100,18 +120,24 @@ const render = () =>{
         container.appendChild(imageEdit);
         container.appendChild(imageDelete);
         const contentTotal = document.getElementById('totalid')
-        contentTotal.innerText = 'Итого: '+summ+' р.'
-        imageDelete.onclick = () => deleteElement(index)
-        imageEdit.onclick = () => editElement(textName,textPrice,container,item.name,item.price,imageEdit,index)
+        contentTotal.innerText = `Итого: ${summ} р.`;
+        imageDelete.onclick = () => deleteElement(item._id, index)
+        imageEdit.onclick = () => editElement(textName, textPrice, container, item, imageEdit, index)
     })
     
 }
 
-const deleteElement = (index) =>{                                                                                        //функция удаления элемента из массива по индексу элемента
+const deleteElement = async (id,index) =>{                                                                                        //функция удаления элемента из массива по индексу элемента
+    console.log(id)
+    const resp = await fetch(`http://localhost:8000/deleteTask?id=${id}`,{
+        method: 'DELETE'
+    });
+    const result = await resp.json();
 
-    allTasks.splice(index,1);//удалем 1 элемент с выбранным индексом
+    allTasks = result.data;
 
     summ = 0;
+
     allTasks.forEach(index=>{
         summ +=Number(index.price)
     })
@@ -124,7 +150,7 @@ const deleteElement = (index) =>{                                               
 
 }
 
-const editElement = (textName,textPrice,container,itemName,itemPrice,imageEdit,index) =>{
+const editElement = (textName, textPrice, container, itemName, item, index) =>{
     // textName // <p>1) hello 22.09.2021</p>
     // textPrice // <p>1 p.</p>
     // container // <div id="task-0" class="task-container"><p>1) hello 22.09.2021</p><p>1 p.</p><img src="edit.svg"><img src="delete.svg"></div>
@@ -148,11 +174,11 @@ const editElement = (textName,textPrice,container,itemName,itemPrice,imageEdit,i
     editImg.src = 'ok.svg';//атрибут
     container.replaceChild(editImg, imageEdit );//заменяем наши картинки на время редактирования
 
-    editImg.onclick = () => editElementSave(index,newName,newPrice);//передаем параметры индекс элемента который мы хотим сохранить и нашновосозданный инпут
+    editImg.onclick = () => editElementSave(index,newName,newPrice,item);//передаем параметры индекс элемента который мы хотим сохранить и нашновосозданный инпут
 
 }
 
-const editElementSave = (index,newName,newPrice) =>{
+const editElementSave = async (index,newName,newPrice) =>{
     
 
     if(newName.value!=='' && newPrice.value!==''){
@@ -167,14 +193,27 @@ const editElementSave = (index,newName,newPrice) =>{
 
         }
 
-        
+        const resp = await fetch('http://localhost:8000/updateTask',{
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            'Access-Control-allow-Origin':'*'
+        },
+        body: JSON.stringify({
+            id: item.id,
+            text1: newName,
+            text2: newPrice
+        })
+        });
+        let result = await resp.json();
+        allTasks = result.data;
 
         allTasks[index].name = newName.value;
         allTasks[index].price = newPrice.value;
 
         summ = 0;
         allTasks.forEach(index=>{
-        summ +=Number(index.price)
+        summ +=Number(index.text2)
         })
 
         render();
@@ -193,6 +232,8 @@ const editElementSave = (index,newName,newPrice) =>{
     
     
 }
+
+
 
 
 

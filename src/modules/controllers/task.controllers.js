@@ -8,10 +8,11 @@ module.exports.getAllTasks = (req, res)=>{
 
 module.exports.createNewTask = (req, res)=> {
   const body = req.body;
-  if (body.hasOwnProperty('text') && body.hasOwnProperty('isCheck')) {
+  if (body.hasOwnProperty('text') && body.hasOwnProperty('price')) {
     const task = new Task({
       text: body.text,
-      isCheck: body.isCheck
+      price: body.price,
+      date: new Date()
     });
     task.save().then(result => {
       Task.find().then(result => {

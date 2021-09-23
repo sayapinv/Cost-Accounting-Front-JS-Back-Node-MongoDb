@@ -4,7 +4,8 @@ const { Schema } = mongose;
 
 const taskScheme = new Schema({
   text: String,
-  isCheck: Boolean
+  price: Number,
+  date: Date
 });
 
 module.exports = Task = mongose.model('tasks', taskScheme);
