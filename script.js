@@ -133,17 +133,15 @@ const deleteElement = async (id,index) =>{                                      
 
     allTasks = result.data;
 
-    summ = 0;
-
-    allTasks.forEach(index=>{
-        summ +=Number(index.price)
-    })
-
     const contentTotal = document.getElementById('totalid')
     contentTotal.innerText = '';
 
     
-    render();
+    summ = allTasks
+        .map(item => (Number(item.price)))
+        .reduce((sum, item) => (sum += item), 0);
+    
+    render(); 
 
 }
 
@@ -198,7 +196,11 @@ const editElementSave = async (index,newName,newPrice,item) =>{
         let result = await resp.json();
         allTasks = result.data;
 
-        render();
+        summ = allTasks
+        .map(item => (Number(item.price)))
+        .reduce((sum, item) => (sum += item), 0);
+    
+        render(); 
 
     }else{
 
